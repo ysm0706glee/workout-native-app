@@ -5,6 +5,7 @@ import Auth from "@/components/Auth";
 import { View } from "react-native";
 import { Session } from "@supabase/supabase-js";
 import { Slot } from "expo-router";
+import Header from "@/components/Header";
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -23,6 +24,7 @@ export default function App() {
     <View>
       {session && session.user ? (
         <>
+          <Header />
           <Slot />
         </>
       ) : (
