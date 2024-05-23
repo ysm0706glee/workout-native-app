@@ -1,22 +1,31 @@
-import { Button } from "@rneui/themed";
-import { useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
-import { supabase } from "@/lib/supabase";
+import { LINKS } from "@/constants/links";
+import { Link } from "expo-router";
+import { StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
-  const [loading, setLoading] = useState(false);
-
-  async function signOut() {
-    setLoading(true);
-    const { error } = await supabase.auth.signOut();
-    if (error) Alert.alert(error.message);
-    setLoading(false);
-  }
+  const links = [
+    {
+      href: LINKS.record,
+      label: "Start Workout",
+    },
+    {
+      href: LINKS.menus,
+      label: "Manage workout menus",
+    },
+    {
+      href: LINKS.progress,
+      label: "View progress",
+    },
+  ];
 
   return (
     <View style={styles.container}>
       <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button title="Sign Out" disabled={loading} onPress={() => signOut()} />
+        {links.map((link) => (
+          <View key={link.href}>
+            <Link href={link.href}>{link.label}</Link>
+          </View>
+        ))}
       </View>
     </View>
   );
