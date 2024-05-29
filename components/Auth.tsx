@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import { Button, Input } from "@rneui/themed";
-import { supabase } from "../lib/supabase";
+import { supabase } from "../libs/supabase";
 
 export default function Auth() {
   const [email, setEmail] = useState("");

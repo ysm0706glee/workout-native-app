@@ -2,7 +2,7 @@ import { Button } from "@rneui/themed";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/libs/supabase";
 import { LINKS } from "@/constants/links";
 
 export default function Header() {
