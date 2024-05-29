@@ -1,11 +1,13 @@
 import "react-native-url-polyfill/auto";
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/libs/supabase";
 import Auth from "@/components/Auth";
 import { View } from "react-native";
 import { Session } from "@supabase/supabase-js";
 import { Slot } from "expo-router";
 import Header from "@/components/Header";
+import { MenusProvider } from "@/contexts/menusContext";
+import { ExercisesProvider } from "@/contexts/exercisesContext";
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -21,15 +23,19 @@ export default function App() {
   }, []);
 
   return (
-    <View>
-      {session && session.user ? (
-        <>
-          <Header />
-          <Slot />
-        </>
-      ) : (
-        <Auth />
-      )}
-    </View>
+    <MenusProvider>
+      <ExercisesProvider>
+        <View>
+          {session && session.user ? (
+            <>
+              <Header />
+              <Slot />
+            </>
+          ) : (
+            <Auth />
+          )}
+        </View>
+      </ExercisesProvider>
+    </MenusProvider>
   );
 }
