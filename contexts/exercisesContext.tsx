@@ -11,11 +11,9 @@ const ExercisesContext = createContext<ExercisesContext>({
 });
 
 type ExercisesDispatch = {
-  getMenuExercises: (menuId: Tables<"menus">["id"]) => Promise<
-    {
-      exercises: Tables<"exercises"> | null;
-    }[]
-  >;
+  getMenuExercises: (
+    menuId: Tables<"menus">["id"]
+  ) => Promise<Tables<"exercises">[]>;
   deleteMenusExercises: (menuId: Tables<"menus">["id"]) => Promise<void>;
   postExercises: (
     name: Tables<"exercises">["name"],
@@ -60,7 +58,7 @@ export function ExercisesProvider({ children }: Props) {
       // TODO: delete type after updating typescript
       .filter((exercise): exercise is Tables<"exercises"> => exercise !== null);
     setExercises(transformedExercises);
-    return data;
+    return transformedExercises;
   }
 
   async function deleteMenusExercises(menuId: Tables<"menus">["id"]) {
