@@ -1,15 +1,21 @@
 import { View } from "react-native";
-import Menu from "@/components/Menu";
 import { useMenus } from "@/contexts/menusContext";
+import React from "react";
+import { Tables } from "@/types/supabase";
 
-export default function MenuList() {
+type Props = {
+  children: (menu: Tables<"menus">) => React.ReactElement;
+};
+
+export default function MenuList({ children }: Props) {
   const { menus } = useMenus();
 
   return (
     <View>
-      {menus.map((menu) => (
-        <Menu key={menu.id} menu={menu} />
-      ))}
+      {menus.map((menu) => {
+        const MenuComponent = children(menu);
+        return React.cloneElement(MenuComponent, { key: menu.id, menu });
+      })}
     </View>
   );
 }

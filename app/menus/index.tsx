@@ -12,6 +12,7 @@ import { Formik } from "formik";
 import { ZodError, z } from "zod";
 import MenuList from "@/components/MenuList";
 import { useMenus, useMenusDispatch } from "@/contexts/menusContext";
+import Menu from "@/components/Menu";
 
 const postMenuSchema = z.object({
   name: z.string(),
@@ -57,7 +58,7 @@ export default function MenusScreen() {
         //  TODO: add loading spinner
         <Text>Loading...</Text>
       ) : menus.length > 0 ? (
-        <MenuList />
+        <MenuList>{(menu) => <Menu key={menu.id} menu={menu} />}</MenuList>
       ) : (
         <Text>No menus available</Text>
       )}
@@ -81,6 +82,7 @@ export default function MenusScreen() {
                 validate={validatePostMenuForm}
                 onSubmit={async (values) => {
                   try {
+                    setIsPostMenusLoading(true);
                     const { name, memo } = values;
                     await postMenus(name, memo);
                     await getMenus();
