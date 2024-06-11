@@ -8,6 +8,7 @@ import { Slot } from "expo-router";
 import Header from "@/components/Header";
 import { MenusProvider } from "@/contexts/menusContext";
 import { ExercisesProvider } from "@/contexts/exercisesContext";
+import { RecordsProvider } from "@/contexts/recordsContext";
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -25,16 +26,18 @@ export default function App() {
   return (
     <MenusProvider>
       <ExercisesProvider>
-        <View>
-          {session && session.user ? (
-            <>
-              <Header />
-              <Slot />
-            </>
-          ) : (
-            <Auth />
-          )}
-        </View>
+        <RecordsProvider>
+          <View>
+            {session && session.user ? (
+              <>
+                <Header />
+                <Slot />
+              </>
+            ) : (
+              <Auth />
+            )}
+          </View>
+        </RecordsProvider>
       </ExercisesProvider>
     </MenusProvider>
   );
