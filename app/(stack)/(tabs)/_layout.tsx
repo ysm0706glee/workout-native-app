@@ -1,4 +1,4 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import { Tabs } from "expo-router";
 
 export default function TabLayout() {
@@ -7,18 +7,18 @@ export default function TabLayout() {
       <Tabs.Screen
         name="progress/index"
         options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="home" color={color} />
+          title: "Chart",
+          tabBarIcon: () => (
+            <AntDesign name="linechart" size={24} color="black" />
           ),
         }}
       />
       <Tabs.Screen
         name="progress/calendar"
         options={{
-          title: "Settings",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="cog" color={color} />
+          title: "Calendar",
+          tabBarIcon: () => (
+            <AntDesign name="calendar" size={24} color="black" />
           ),
         }}
       />
