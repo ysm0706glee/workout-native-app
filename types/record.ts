@@ -1,19 +1,41 @@
 import { z } from "zod";
 
-export const recordSchema = z.object({
+export const recordForPostSchema = z.object({
   sets: z.number().min(1),
   reps: z.number().min(1),
   weight: z.number().min(0),
 });
 
-export const recordsSchema = z.record(
-  z.number(),
+export type Record = z.infer<typeof recordForPostSchema>;
+
+export const recordsForPostSchema = z.record(
+  z.string(),
   z.object({
     memo: z.string().optional(),
-    records: z.array(recordSchema),
+    records: z.array(recordForPostSchema),
   })
 );
 
-export type Record = z.infer<typeof recordSchema>;
+export type RecordsForPost = z.infer<typeof recordsForPostSchema>;
 
-export type Records = z.infer<typeof recordsSchema>;
+// TODO: refactor
+export const recordSchema = recordForPostSchema;
+
+export const formattedCalenderRecordsSchema = z.object({
+  menu: z.object({
+    id: z.number(),
+    name: z.string(),
+    memo: z.string().nullable(),
+  }),
+  records: z.record(
+    z.string(),
+    z.object({
+      memo: z.string().nullable(),
+      records: z.array(recordSchema),
+    })
+  ),
+});
+
+export type FormattedCalenderRecords = z.infer<
+  typeof formattedCalenderRecordsSchema
+>;
