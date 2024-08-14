@@ -38,7 +38,7 @@ export default function MenuScreen() {
 
   const numberMenuId = parsedMenuId.data;
 
-  const { getMenu } = useMenusDispatch();
+  const { getMenuById } = useMenusDispatch();
   const { exercises } = useExercises();
   const { getMenuExercises, deleteMenusExercises } = useExercisesDispatch();
 
@@ -53,7 +53,7 @@ export default function MenuScreen() {
     (async () => {
       try {
         setIsGetMenusAndGetExercisesLoading(true);
-        await getMenu(numberMenuId);
+        await getMenuById(numberMenuId);
         await getMenuExercises(numberMenuId);
       } catch (error) {
         console.error(error);

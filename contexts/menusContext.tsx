@@ -14,7 +14,7 @@ const MenusContext = createContext<MenusContext>({
 
 type MenusDispatch = {
   getMenus: () => Promise<Tables<"menus">[]>;
-  getMenu: (id: Tables<"menus">["id"]) => Promise<Tables<"menus">>;
+  getMenuById: (id: Tables<"menus">["id"]) => Promise<Tables<"menus">>;
   deleteMenus: (menuId: Tables<"menus">["id"]) => Promise<void>;
   postMenus: (
     name: Tables<"menus">["name"],
@@ -26,7 +26,7 @@ const MenusDispatchContext = createContext<MenusDispatch>({
   getMenus: () => {
     throw Error("no default value");
   },
-  getMenu: () => {
+  getMenuById: () => {
     throw Error("no default value");
   },
   deleteMenus: () => {
@@ -52,7 +52,7 @@ export function MenusProvider({ children }: Props) {
     return data;
   }
 
-  async function getMenu(id: Tables<"menus">["id"]) {
+  async function getMenuById(id: Tables<"menus">["id"]) {
     const { data, error } = await supabase
       .from("menus")
       .select("*")
@@ -91,7 +91,7 @@ export function MenusProvider({ children }: Props) {
       <MenusDispatchContext.Provider
         value={{
           getMenus,
-          getMenu,
+          getMenuById,
           deleteMenus,
           postMenus,
         }}

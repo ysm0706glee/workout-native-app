@@ -4,7 +4,7 @@ import { Button } from "@rneui/themed";
 import { Formik } from "formik";
 import { ZodError } from "zod";
 import { useRecords, useRecordsDispatch } from "@/contexts/recordsContext";
-import { Records, recordsSchema } from "@/types/record";
+import { RecordsForPost, recordsForPostSchema } from "@/types/record";
 import { useExercises } from "@/contexts/exercisesContext";
 import { Tables } from "@/types/supabase";
 
@@ -12,9 +12,9 @@ type Props = {
   menuId: number;
 };
 
-function validatePostRecordForm(values: Records) {
+function validatePostRecordForm(values: RecordsForPost) {
   try {
-    recordsSchema.parse(values);
+    recordsForPostSchema.parse(values);
   } catch (error) {
     if (error instanceof ZodError) {
       return error.formErrors.fieldErrors;
@@ -23,7 +23,7 @@ function validatePostRecordForm(values: Records) {
 }
 
 export default function RecordForm(props: Props) {
-  const { records } = useRecords();
+  const { recordsForPost } = useRecords();
   const { postRecords } = useRecordsDispatch();
   const { exercises } = useExercises();
 
@@ -38,7 +38,8 @@ export default function RecordForm(props: Props) {
     <View>
       <Formik
         enableReinitialize={true}
-        initialValues={records}
+        // FIXME:
+        initialValues={recordsForPost || {}}
         validate={validatePostRecordForm}
         onSubmit={async (values) => {
           try {
@@ -100,6 +101,7 @@ export default function RecordForm(props: Props) {
                     const latestWeight =
                       records[records.length - 1]?.weight || 0;
                     const newRecord = {
+                      sets: records.length + 1,
                       reps: latestReps,
                       weight: latestWeight,
                     };
