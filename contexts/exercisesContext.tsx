@@ -14,6 +14,9 @@ type ExercisesDispatch = {
   getMenuExercises: (
     menuId: Tables<"menus">["id"]
   ) => Promise<Tables<"exercises">[]>;
+  getExerciseById: (
+    exerciseId: Tables<"exercises">["id"]
+  ) => Promise<Tables<"exercises">>;
   deleteMenusExercises: (menuId: Tables<"menus">["id"]) => Promise<void>;
   postExercises: (
     name: Tables<"exercises">["name"],
@@ -27,6 +30,9 @@ type ExercisesDispatch = {
 
 const ExercisesDispatchContext = createContext<ExercisesDispatch>({
   getMenuExercises: () => {
+    throw Error("no default value");
+  },
+  getExerciseById: () => {
     throw Error("no default value");
   },
   deleteMenusExercises: () => {
@@ -59,6 +65,16 @@ export function ExercisesProvider({ children }: Props) {
       .filter((exercise): exercise is Tables<"exercises"> => exercise !== null);
     setExercises(transformedExercises);
     return transformedExercises;
+  }
+
+  async function getExerciseById(exerciseId: Tables<"exercises">["id"]) {
+    const { data, error } = await supabase
+      .from("exercises")
+      .select("*")
+      .eq("id", exerciseId)
+      .single();
+    if (error) throw error;
+    return data;
   }
 
   async function deleteMenusExercises(menuId: Tables<"menus">["id"]) {
@@ -96,6 +112,7 @@ export function ExercisesProvider({ children }: Props) {
       <ExercisesDispatchContext.Provider
         value={{
           getMenuExercises,
+          getExerciseById,
           deleteMenusExercises,
           postExercises,
           postMenusExercises,

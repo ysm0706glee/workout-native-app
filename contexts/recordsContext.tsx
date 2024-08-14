@@ -1,24 +1,36 @@
 import { createContext, useContext, useState } from "react";
 import { supabase } from "@/libs/supabase";
 import { Tables } from "@/types/supabase";
-import { Record, Records } from "@/types/record";
-import { formateDate } from "@/libs/date";
+import {
+  FormattedCalenderRecords,
+  Record,
+  RecordsForPost,
+} from "@/types/record";
+import { formateDate } from "@/libs/format";
 
 type RecordsContext = {
-  records: Records;
+  recordsForPost: RecordsForPost | null;
+  uniqueDatesOfRecordsU: string[] | null;
+  formattedCalenderRecords: FormattedCalenderRecords | null;
 };
 
 const RecordsContext = createContext<RecordsContext>({
-  records: {},
+  recordsForPost: null,
+  uniqueDatesOfRecordsU: null,
+  formattedCalenderRecords: null,
 });
 
 type RecordsDispatch = {
   getLatestRecordByExerciseIdSortedBySets: (
     exerciseId: Tables<"exercises">["id"]
   ) => Promise<Tables<"records">[] | null>;
-  createRecords: (exercises: Tables<"exercises">[]) => Promise<void>;
+  getUniqueRecordsDates: () => Promise<string[] | null>;
+  getFormattedCalenderRecordsByDate: (
+    date: string
+  ) => Promise<FormattedCalenderRecords | null>;
+  createRecordsForPost: (exercises: Tables<"exercises">[]) => Promise<void>;
   postRecords: (
-    records: Records,
+    records: RecordsForPost,
     menuId: Tables<"menus">["id"]
   ) => Promise<void>;
 };
@@ -27,7 +39,13 @@ const RecordsDispatchContext = createContext<RecordsDispatch>({
   getLatestRecordByExerciseIdSortedBySets: () => {
     throw Error("no default value");
   },
-  createRecords: () => {
+  getUniqueRecordsDates: () => {
+    throw Error("no default value");
+  },
+  getFormattedCalenderRecordsByDate: () => {
+    throw Error("no default value");
+  },
+  createRecordsForPost: () => {
     throw Error("no default value");
   },
   postRecords: () => {
@@ -40,7 +58,12 @@ type Props = {
 };
 
 export function RecordsProvider({ children }: Props) {
-  const [records, setRecords] = useState<Records>({});
+  const [recordsForPost, setRecordsForPost] = useState<RecordsForPost>({});
+  const [uniqueDatesOfRecordsU, setUniqueDatesOfRecords] = useState<
+    string[] | null
+  >(null);
+  const [formattedCalenderRecords, setFormattedCalenderRecords] =
+    useState<FormattedCalenderRecords | null>(null);
 
   async function getLatestRecordByExerciseIdSortedBySets(
     exerciseId: Tables<"exercises">["id"]
@@ -55,6 +78,59 @@ export function RecordsProvider({ children }: Props) {
       console.error(error);
     }
     return data;
+  }
+
+  async function getUniqueRecordsDates() {
+    const { data, error } = await supabase.from("records").select("date");
+    if (error) {
+      console.error(error);
+    }
+    const uniqueRecordsDates = Array.from(
+      new Set(data?.map((data) => data.date))
+    );
+    setUniqueDatesOfRecords(uniqueRecordsDates);
+    return uniqueRecordsDates;
+  }
+
+  async function getRecordsWithMenusAnsExercisesByDate(date: string) {
+    const { data, error } = await supabase
+      .from("records")
+      .select("*, menus (id, name, memo), exercises (*)")
+      .eq("date", date);
+    if (error) {
+      console.error(error);
+    }
+    return data;
+  }
+
+  async function getFormattedCalenderRecordsByDate(date: string) {
+    const data = await getRecordsWithMenusAnsExercisesByDate(date);
+    if (!data || !data.length || !data[0].menus) {
+      return null;
+    }
+    const result: FormattedCalenderRecords = {
+      menu: {
+        id: data[0].menus.id,
+        name: data[0].menus.name,
+        memo: data[0].menus.memo,
+      },
+      records: {},
+    };
+    data.forEach((x) => {
+      const { exercises, sets, reps, weight } = x;
+      if (!exercises) {
+        return;
+      }
+      if (!result.records[exercises.id]) {
+        result.records[exercises.id] = {
+          records: [],
+          memo: exercises.memo,
+        };
+      }
+      result.records[exercises.id].records.push({ sets, reps, weight });
+    });
+    setFormattedCalenderRecords(result);
+    return result;
   }
 
   function createRecord(
@@ -80,8 +156,8 @@ export function RecordsProvider({ children }: Props) {
     return newRecord;
   }
 
-  async function createRecords(exercises: Tables<"exercises">[]) {
-    const result: Records = {};
+  async function createRecordsForPost(exercises: Tables<"exercises">[]) {
+    const result: RecordsForPost = {};
     for (const exercise of exercises) {
       const latestRecords = await getLatestRecordByExerciseIdSortedBySets(
         exercise.id
@@ -90,10 +166,13 @@ export function RecordsProvider({ children }: Props) {
       const newRecord = createRecord(exercise, latestRecord);
       Object.assign(result, newRecord);
     }
-    setRecords(result);
+    setRecordsForPost(result);
   }
 
-  async function postRecords(records: Records, menuId: Tables<"menus">["id"]) {
+  async function postRecords(
+    records: RecordsForPost,
+    menuId: Tables<"menus">["id"]
+  ) {
     const result: Omit<Tables<"records">, "created_at" | "id">[] = [];
     const date = formateDate(new Date());
     for (const [key, value] of Object.entries(records)) {
@@ -116,11 +195,19 @@ export function RecordsProvider({ children }: Props) {
   }
 
   return (
-    <RecordsContext.Provider value={{ records }}>
+    <RecordsContext.Provider
+      value={{
+        recordsForPost,
+        uniqueDatesOfRecordsU,
+        formattedCalenderRecords,
+      }}
+    >
       <RecordsDispatchContext.Provider
         value={{
           getLatestRecordByExerciseIdSortedBySets,
-          createRecords,
+          getUniqueRecordsDates,
+          getFormattedCalenderRecordsByDate,
+          createRecordsForPost,
           postRecords,
         }}
       >
