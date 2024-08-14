@@ -36,10 +36,10 @@ export default function RecordScreen() {
   const numberMenuId = parsedMenuId.data;
 
   const { menu } = useMenus();
-  const { getMenu } = useMenusDispatch();
+  const { getMenuById } = useMenusDispatch();
   const { getMenuExercises } = useExercisesDispatch();
-  const { records } = useRecords();
-  const { createRecords } = useRecordsDispatch();
+  const { recordsForPost } = useRecords();
+  const { createRecordsForPost } = useRecordsDispatch();
 
   // TODO: change name
   const [isLoading, setIsLoading] = useState(false);
@@ -49,10 +49,10 @@ export default function RecordScreen() {
       try {
         setIsLoading(true);
         const [_menu, exercises] = await Promise.all([
-          getMenu(numberMenuId),
+          getMenuById(numberMenuId),
           getMenuExercises(numberMenuId),
         ]);
-        await createRecords(exercises);
+        await createRecordsForPost(exercises);
       } catch (error) {
         console.error(error);
       } finally {
@@ -67,7 +67,8 @@ export default function RecordScreen() {
         //  TODO: add loading spinner
         <Text>Loading...</Text>
       ) : (
-        Object.keys(records).length > 0 && (
+        recordsForPost &&
+        Object.keys(recordsForPost).length > 0 && (
           <>
             <Text>{menu?.name}</Text>
             <Text>{menu?.memo}</Text>
