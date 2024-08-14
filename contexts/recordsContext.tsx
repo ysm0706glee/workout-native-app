@@ -10,13 +10,13 @@ import { formateDate } from "@/libs/format";
 
 type RecordsContext = {
   recordsForPost: RecordsForPost | null;
-  uniqueDatesOfRecordsU: string[] | null;
+  uniqueRecordsDates: string[] | null;
   formattedCalenderRecords: FormattedCalenderRecords | null;
 };
 
 const RecordsContext = createContext<RecordsContext>({
   recordsForPost: null,
-  uniqueDatesOfRecordsU: null,
+  uniqueRecordsDates: null,
   formattedCalenderRecords: null,
 });
 
@@ -59,9 +59,9 @@ type Props = {
 
 export function RecordsProvider({ children }: Props) {
   const [recordsForPost, setRecordsForPost] = useState<RecordsForPost>({});
-  const [uniqueDatesOfRecordsU, setUniqueDatesOfRecords] = useState<
-    string[] | null
-  >(null);
+  const [uniqueRecordsDates, setUniqueRecordsDates] = useState<string[] | null>(
+    null
+  );
   const [formattedCalenderRecords, setFormattedCalenderRecords] =
     useState<FormattedCalenderRecords | null>(null);
 
@@ -88,7 +88,7 @@ export function RecordsProvider({ children }: Props) {
     const uniqueRecordsDates = Array.from(
       new Set(data?.map((data) => data.date))
     );
-    setUniqueDatesOfRecords(uniqueRecordsDates);
+    setUniqueRecordsDates(uniqueRecordsDates);
     return uniqueRecordsDates;
   }
 
@@ -198,7 +198,7 @@ export function RecordsProvider({ children }: Props) {
     <RecordsContext.Provider
       value={{
         recordsForPost,
-        uniqueDatesOfRecordsU,
+        uniqueRecordsDates,
         formattedCalenderRecords,
       }}
     >
