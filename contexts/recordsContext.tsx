@@ -6,18 +6,21 @@ import {
   Record,
   RecordsForPost,
 } from "@/types/record";
-import { formateDate } from "@/libs/format";
+import { formateChart, formateDate } from "@/libs/format";
+import { Chart } from "@/types/chart";
 
 type RecordsContext = {
   recordsForPost: RecordsForPost | null;
   uniqueRecordsDates: string[] | null;
   formattedCalenderRecords: FormattedCalenderRecords | null;
+  formattedChart: Chart[] | null;
 };
 
 const RecordsContext = createContext<RecordsContext>({
   recordsForPost: null,
   uniqueRecordsDates: null,
   formattedCalenderRecords: null,
+  formattedChart: null,
 });
 
 type RecordsDispatch = {
@@ -28,6 +31,9 @@ type RecordsDispatch = {
   getFormattedCalenderRecordsByDate: (
     date: string
   ) => Promise<FormattedCalenderRecords | null>;
+  getFormattedChartByMenuId: (
+    menuId: Tables<"menus">["id"]
+  ) => Promise<Chart[] | null>;
   createRecordsForPost: (exercises: Tables<"exercises">[]) => Promise<void>;
   postRecords: (
     records: RecordsForPost,
@@ -43,6 +49,9 @@ const RecordsDispatchContext = createContext<RecordsDispatch>({
     throw Error("no default value");
   },
   getFormattedCalenderRecordsByDate: () => {
+    throw Error("no default value");
+  },
+  getFormattedChartByMenuId: () => {
     throw Error("no default value");
   },
   createRecordsForPost: () => {
@@ -64,6 +73,7 @@ export function RecordsProvider({ children }: Props) {
   );
   const [formattedCalenderRecords, setFormattedCalenderRecords] =
     useState<FormattedCalenderRecords | null>(null);
+  const [formattedChart, setFormattedChart] = useState<Chart[] | null>(null);
 
   async function getLatestRecordByExerciseIdSortedBySets(
     exerciseId: Tables<"exercises">["id"]
@@ -133,6 +143,28 @@ export function RecordsProvider({ children }: Props) {
     return result;
   }
 
+  async function getRecordsByMenuId(menuId: Tables<"menus">["id"]) {
+    const { data, error } = await supabase
+      .from("records")
+      .select("date, exercise_id, weight")
+      .eq("menu_id", menuId)
+      .order("date", { ascending: true });
+    if (error) {
+      console.error(error);
+    }
+    return data;
+  }
+
+  async function getFormattedChartByMenuId(menuId: Tables<"menus">["id"]) {
+    const data = await getRecordsByMenuId(menuId);
+    if (!data) {
+      return null;
+    }
+    const formattedChart = formateChart(data);
+    setFormattedChart(formattedChart);
+    return formattedChart;
+  }
+
   function createRecord(
     exercise: Tables<"exercises">,
     latestRecord?: Tables<"records">
@@ -200,6 +232,7 @@ export function RecordsProvider({ children }: Props) {
         recordsForPost,
         uniqueRecordsDates,
         formattedCalenderRecords,
+        formattedChart,
       }}
     >
       <RecordsDispatchContext.Provider
@@ -207,6 +240,7 @@ export function RecordsProvider({ children }: Props) {
           getLatestRecordByExerciseIdSortedBySets,
           getUniqueRecordsDates,
           getFormattedCalenderRecordsByDate,
+          getFormattedChartByMenuId,
           createRecordsForPost,
           postRecords,
         }}

@@ -1,3 +1,4 @@
+import { Chart } from "@/types/chart";
 import { FormattedCalenderRecords } from "@/types/record";
 import { Tables } from "@/types/supabase";
 
@@ -21,4 +22,26 @@ export function formateMarkedDates(dates: string[]) {
     },
     {} as Record<string, { marked: boolean }>
   );
+}
+
+export function formateChart(
+  dateAndWeightRecords: Pick<
+    Tables<"records">,
+    "date" | "exercise_id" | "weight"
+  >[]
+) {
+  const result: Chart[] = [];
+  dateAndWeightRecords.forEach((dateAndWeightRecord) => {
+    const { date, exercise_id, weight } = dateAndWeightRecord;
+    const idFound = result.find((x) => x[exercise_id]);
+    if (idFound) {
+      const prevWeight = idFound[exercise_id].slice(-1)[0].value;
+      if (prevWeight < weight) {
+        idFound[exercise_id].push({ value: weight, label: date });
+      }
+    } else {
+      result.push({ [exercise_id]: [{ value: weight, label: date }] });
+    }
+  });
+  return result;
 }
