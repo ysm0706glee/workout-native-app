@@ -1,11 +1,10 @@
 import { useRecords, useRecordsDispatch } from "@/contexts/recordsContext";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Text, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 import { FlashList } from "@shopify/flash-list";
 import { formateMarkedDates } from "@/libs/format";
-import { useExercisesDispatch } from "@/contexts/exercisesContext";
-import { Tables } from "@/types/supabase";
+import ExerciseName from "@/components/ExerciseName";
 
 export default function CalendarScreen() {
   const { uniqueRecordsDates, formattedCalenderRecords } = useRecords();
@@ -67,23 +66,4 @@ export default function CalendarScreen() {
       ) : null}
     </View>
   );
-}
-
-function ExerciseName({ id }: { id: Tables<"exercises">["id"] }) {
-  const { getExerciseById } = useExercisesDispatch();
-
-  const [name, setName] = useState<Tables<"menus">["name"] | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const exercise = await getExerciseById(id);
-        setName(exercise.name);
-      } catch (error) {
-        console.error(error);
-      }
-    })();
-  }, []);
-
-  return <Text>{name}</Text>;
 }
