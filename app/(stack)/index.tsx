@@ -1,6 +1,8 @@
 import { LINKS } from "@/constants/links";
+import { FlashList } from "@shopify/flash-list";
 import { Link } from "expo-router";
 import { View } from "react-native";
+import { SizableText } from "tamagui";
 
 export default function HomeScreen() {
   const links = [
@@ -19,12 +21,17 @@ export default function HomeScreen() {
   ];
 
   return (
-    <View>
-      {links.map((link) => (
-        <View key={link.href}>
-          <Link href={link.href}>{link.label}</Link>
-        </View>
-      ))}
+    <View style={{ height: 200 }}>
+      <FlashList
+        data={links}
+        keyExtractor={(item) => item.href}
+        renderItem={({ item }) => (
+          <Link href={item.href}>
+            <SizableText color="white">{item.label}</SizableText>
+          </Link>
+        )}
+        estimatedItemSize={200}
+      />
     </View>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useMenus, useMenusDispatch } from "@/contexts/menusContext";
 import MenuList from "@/components/MenuList";
 import RecordMenu from "@/components/RecordMenu";
+import { Spinner } from "tamagui";
 
 export default function RecordScreen() {
   const { menus } = useMenus();
@@ -27,8 +28,9 @@ export default function RecordScreen() {
   return (
     <View>
       {isGetMenusLoading ? (
-        //  TODO: add loading spinner
-        <Text>Loading...</Text>
+        <View>
+          <Spinner size="large" color="$green10" />
+        </View>
       ) : menus.length > 0 ? (
         <MenuList>
           {(menu) => <RecordMenu key={menu.id} menu={menu} />}

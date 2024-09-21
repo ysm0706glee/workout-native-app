@@ -5,6 +5,7 @@ import MenuList from "@/components/MenuList";
 import { useMenus, useMenusDispatch } from "@/contexts/menusContext";
 import Menu from "@/components/Menu";
 import { Link } from "expo-router";
+import { SizableText, Spinner, YStack } from "tamagui";
 
 export default function MenusScreen() {
   const { menus } = useMenus();
@@ -28,14 +29,15 @@ export default function MenusScreen() {
   return (
     <View>
       {isGetMenusLoading ? (
-        //  TODO: add loading spinner
-        <Text>Loading...</Text>
+        <Spinner size="large" color="$green10" />
       ) : menus.length > 0 ? (
         <MenuList>{(menu) => <Menu key={menu.id} menu={menu} />}</MenuList>
       ) : (
-        <Text>No menus available</Text>
+        <SizableText color="white">No menus available</SizableText>
       )}
-      <Link href="menus/add_menu_modal">Present modal</Link>
+      <Link style={{ color: "white" }} href="menus/add_menu_modal">
+        Present modal
+      </Link>
     </View>
   );
 }

@@ -7,6 +7,7 @@ import { LINKS } from "@/constants/links";
 import { useExercisesDispatch } from "@/contexts/exercisesContext";
 import { useRecords, useRecordsDispatch } from "@/contexts/recordsContext";
 import RecordForm from "@/components/RecordForm";
+import { SizableText, Spinner } from "tamagui";
 
 const menuIdSchema = z.union([
   z
@@ -64,14 +65,13 @@ export default function RecordScreen() {
   return (
     <View>
       {isLoading ? (
-        //  TODO: add loading spinner
-        <Text>Loading...</Text>
+        <Spinner size="large" color="$green10" />
       ) : (
         recordsForPost &&
         Object.keys(recordsForPost).length > 0 && (
           <>
-            <Text>{menu?.name}</Text>
-            <Text>{menu?.memo}</Text>
+            <SizableText color="white">{menu?.name}</SizableText>
+            <SizableText color="white">{menu?.memo}</SizableText>
             <RecordForm menuId={numberMenuId} />
           </>
         )

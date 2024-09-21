@@ -1,8 +1,8 @@
 import { supabase } from "@/libs/supabase";
-import { Button } from "@rneui/themed";
 import { Stack } from "expo-router";
 import { useState } from "react";
 import { Alert } from "react-native";
+import { Button } from "tamagui";
 
 export default function StackLayout() {
   const [isSignOutLoading, setIsSignOutLoading] = useState(false);
@@ -18,12 +18,17 @@ export default function StackLayout() {
     <Stack
       screenOptions={{
         headerRight: () => (
-          <Button
-            onPress={signOut}
-            title="logout"
-            disabled={isSignOutLoading}
-          />
+          <Button onPress={signOut} disabled={isSignOutLoading}>
+            logout
+          </Button>
         ),
+        headerStyle: {
+          backgroundColor: "#000",
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontWeight: "bold",
+        },
       }}
     >
       <Stack.Screen
