@@ -3,13 +3,15 @@ import { Tabs } from "expo-router";
 
 export default function TabLayout() {
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: "blue", headerShown: false }}>
+    <Tabs
+      screenOptions={{ tabBarActiveTintColor: "white", headerShown: false }}
+    >
       <Tabs.Screen
         name="progress/index"
         options={{
           title: "Chart",
-          tabBarIcon: () => (
-            <AntDesign name="linechart" size={24} color="black" />
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="linechart" size={24} color={color} />
           ),
         }}
       />
@@ -17,8 +19,8 @@ export default function TabLayout() {
         name="progress/calendar"
         options={{
           title: "Calendar",
-          tabBarIcon: () => (
-            <AntDesign name="calendar" size={24} color="black" />
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="calendar" size={24} color={color} />
           ),
         }}
       />

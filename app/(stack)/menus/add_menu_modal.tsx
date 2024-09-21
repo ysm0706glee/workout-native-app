@@ -1,10 +1,10 @@
-import { View, TextInput } from "react-native";
+import { View } from "react-native";
 import { Formik } from "formik";
 import { ZodError, z } from "zod";
 import { useMenusDispatch } from "@/contexts/menusContext";
 import { useState } from "react";
-import { Button } from "@rneui/themed";
 import { useRouter } from "expo-router";
+import { Button, Input } from "tamagui";
 
 const postMenuSchema = z.object({
   name: z.string(),
@@ -55,21 +55,19 @@ export default function AddMenuModal() {
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <View>
-            <TextInput
+            <Input
               placeholder="menu name"
               onChangeText={handleChange("name")}
               onBlur={handleBlur("name")}
               value={values.name}
             />
-            <TextInput
+            <Input
               placeholder="memo"
               onChangeText={handleChange("memo")}
               onBlur={handleBlur("memo")}
               value={values.memo}
             />
-            <Button onPress={() => handleSubmit()} loading={isPostMenusLoading}>
-              Add
-            </Button>
+            <Button onPress={() => handleSubmit()}>Add</Button>
           </View>
         )}
       </Formik>

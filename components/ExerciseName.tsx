@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useExercisesDispatch } from "@/contexts/exercisesContext";
 import { Tables } from "@/types/supabase";
-import { Text } from "react-native";
+import { SizableText } from "tamagui";
 
 export default function ExerciseName({
   id,
+  textColor = "white",
 }: {
   id: Tables<"exercises">["id"];
+  textColor?: string;
 }) {
   const { getExerciseById } = useExercisesDispatch();
 
@@ -23,5 +25,5 @@ export default function ExerciseName({
     })();
   }, []);
 
-  return <Text>{name}</Text>;
+  return <SizableText color={textColor}>{name}</SizableText>;
 }

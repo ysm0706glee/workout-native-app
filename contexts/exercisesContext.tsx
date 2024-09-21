@@ -17,7 +17,10 @@ type ExercisesDispatch = {
   getExerciseById: (
     exerciseId: Tables<"exercises">["id"]
   ) => Promise<Tables<"exercises">>;
-  deleteMenusExercises: (menuId: Tables<"menus">["id"]) => Promise<void>;
+  deleteMenusExercises: (
+    menuId: Tables<"menus">["id"],
+    exercisesId: Tables<"exercises">["id"]
+  ) => Promise<void>;
   postExercises: (
     name: Tables<"exercises">["name"],
     memo: Tables<"exercises">["memo"]
@@ -77,11 +80,15 @@ export function ExercisesProvider({ children }: Props) {
     return data;
   }
 
-  async function deleteMenusExercises(menuId: Tables<"menus">["id"]) {
+  async function deleteMenusExercises(
+    menuId: Tables<"menus">["id"],
+    exercisesId: Tables<"exercises">["id"]
+  ) {
     const { error } = await supabase
       .from("menus_exercises")
       .delete()
-      .eq("menu_id", menuId);
+      .eq("menu_id", menuId)
+      .eq("exercise_id", exercisesId);
     if (error) throw error;
   }
 

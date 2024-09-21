@@ -1,4 +1,3 @@
-import { Button, Text } from "@rneui/themed";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
@@ -8,6 +7,8 @@ import {
   useExercisesDispatch,
 } from "@/contexts/exercisesContext";
 import { z } from "zod";
+import { Button, SizableText, Spinner } from "tamagui";
+import { FlashList } from "@shopify/flash-list";
 
 const menuIdSchema = z.union([
   z
@@ -46,6 +47,7 @@ export default function MenuScreen() {
     isGetMenusAndGetExercisesLoading,
     setIsGetMenusAndGetExercisesLoading,
   ] = useState(false);
+  // TODO:
   const [isDeleteMenusExercisesLoading, setIsDeleteMenusExercisesLoading] =
     useState(false);
 
@@ -64,20 +66,23 @@ export default function MenuScreen() {
   }, []);
 
   return (
-    <View>
+    <View style={{ height: 400 }}>
       {isGetMenusAndGetExercisesLoading ? (
-        <Text>Loading...</Text>
+        <View>
+          <Spinner size="large" color="$green10" />
+        </View>
       ) : (
-        exercises?.map((exercise) => (
-          <View key={exercise.id}>
+        <FlashList
+          data={exercises}
+          renderItem={({ item }) => (
             <View>
-              <Text>{exercise.name}</Text>
-              <Text>{exercise.memo}</Text>
+              <SizableText color="white">{item.name}</SizableText>
+              <SizableText color="white">{item.memo}</SizableText>
               <Button
                 onPress={async () => {
                   try {
                     setIsDeleteMenusExercisesLoading(true);
-                    await deleteMenusExercises(numberMenuId);
+                    await deleteMenusExercises(numberMenuId, item.id);
                     await getMenuExercises(numberMenuId);
                   } catch (error) {
                     console.error(error);
@@ -85,15 +90,18 @@ export default function MenuScreen() {
                     setIsDeleteMenusExercisesLoading(false);
                   }
                 }}
-                loading={isDeleteMenusExercisesLoading}
               >
                 ×
               </Button>
             </View>
-          </View>
-        ))
+          )}
+          estimatedItemSize={400}
+        />
       )}
-      <Link href={`menus/${numberMenuId}/add_exercise_modal`}>
+      <Link
+        style={{ color: "white" }}
+        href={`menus/${numberMenuId}/add_exercise_modal`}
+      >
         Present modal
       </Link>
     </View>

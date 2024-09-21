@@ -1,10 +1,10 @@
-import { View, TextInput } from "react-native";
+import { View } from "react-native";
 import { Formik } from "formik";
 import { ZodError, z } from "zod";
 import { useState } from "react";
-import { Button } from "@rneui/themed";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useExercisesDispatch } from "@/contexts/exercisesContext";
+import { Button, Input, TextArea } from "tamagui";
 
 const menuIdSchema = z.union([
   z
@@ -81,24 +81,19 @@ export default function AddMExerciseModal() {
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <View>
-            <TextInput
+            <Input
               placeholder="exercise name"
               onChangeText={handleChange("name")}
               onBlur={handleBlur("name")}
               value={values.name}
             />
-            <TextInput
+            <TextArea
               placeholder="memo"
               onChangeText={handleChange("memo")}
               onBlur={handleBlur("memo")}
               value={values.memo}
             />
-            <Button
-              onPress={() => handleSubmit()}
-              loading={isPostExercisesLoading}
-            >
-              Add
-            </Button>
+            <Button onPress={() => handleSubmit()}>Add</Button>
           </View>
         )}
       </Formik>
