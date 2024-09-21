@@ -116,6 +116,7 @@ export function RecordsProvider({ children }: Props) {
   async function getFormattedCalenderRecordsByDate(date: string) {
     const data = await getRecordsWithMenusAnsExercisesByDate(date);
     if (!data || !data.length || !data[0].menus) {
+      setFormattedCalenderRecords(null);
       return null;
     }
     const result: FormattedCalenderRecords = {
