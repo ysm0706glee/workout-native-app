@@ -67,7 +67,12 @@ export default function AddMenuModal() {
               onBlur={handleBlur("memo")}
               value={values.memo}
             />
-            <Button onPress={() => handleSubmit()}>Add</Button>
+            <Button
+              disabled={isPostMenusLoading}
+              onPress={() => handleSubmit()}
+            >
+              Add
+            </Button>
           </View>
         )}
       </Formik>

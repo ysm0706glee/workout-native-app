@@ -57,6 +57,10 @@ export default function AddMExerciseModal() {
 
   const [isPostExercisesLoading, setIsPostExercisesLoading] = useState(false);
 
+  const closeAddExerciseModal = () => {
+    router.dismiss();
+  };
+
   return (
     <View>
       <Formik
@@ -76,6 +80,7 @@ export default function AddMExerciseModal() {
             console.error(error);
           } finally {
             setIsPostExercisesLoading(false);
+            closeAddExerciseModal();
           }
         }}
       >
@@ -93,7 +98,12 @@ export default function AddMExerciseModal() {
               onBlur={handleBlur("memo")}
               value={values.memo}
             />
-            <Button onPress={() => handleSubmit()}>Add</Button>
+            <Button
+              disabled={isPostExercisesLoading}
+              onPress={() => handleSubmit()}
+            >
+              Add
+            </Button>
           </View>
         )}
       </Formik>

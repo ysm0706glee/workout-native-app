@@ -71,6 +71,10 @@ export default function MenuScreen() {
         <View>
           <Spinner size="large" color="$green10" />
         </View>
+      ) : exercises.length === 0 ? (
+        <SizableText color="white">
+          No exercises found for this menu.
+        </SizableText>
       ) : (
         <FlashList
           data={exercises}
@@ -79,6 +83,7 @@ export default function MenuScreen() {
               <SizableText color="white">{item.name}</SizableText>
               <SizableText color="white">{item.memo}</SizableText>
               <Button
+                disabled={isDeleteMenusExercisesLoading}
                 onPress={async () => {
                   try {
                     setIsDeleteMenusExercisesLoading(true);
@@ -98,12 +103,12 @@ export default function MenuScreen() {
           estimatedItemSize={400}
         />
       )}
-      <Link
-        style={{ color: "white" }}
-        href={`menus/${numberMenuId}/add_exercise_modal`}
-      >
-        Present modal
-      </Link>
+
+      <Button>
+        <Link href={`menus/${numberMenuId}/add_exercise_modal`}>
+          Add exercise
+        </Link>
+      </Button>
     </View>
   );
 }

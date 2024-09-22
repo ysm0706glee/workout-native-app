@@ -1,11 +1,10 @@
-import { Text } from "@rneui/themed";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import MenuList from "@/components/MenuList";
 import { useMenus, useMenusDispatch } from "@/contexts/menusContext";
 import Menu from "@/components/Menu";
 import { Link } from "expo-router";
-import { SizableText, Spinner, YStack } from "tamagui";
+import { Button, SizableText, Spinner } from "tamagui";
 
 export default function MenusScreen() {
   const { menus } = useMenus();
@@ -35,9 +34,10 @@ export default function MenusScreen() {
       ) : (
         <SizableText color="white">No menus available</SizableText>
       )}
-      <Link style={{ color: "white" }} href="menus/add_menu_modal">
-        Present modal
-      </Link>
+
+      <Button>
+        <Link href="menus/add_menu_modal">Add menu</Link>
+      </Button>
     </View>
   );
 }

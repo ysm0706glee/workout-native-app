@@ -1,6 +1,6 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { useEffect, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import { z } from "zod";
 import { useMenus, useMenusDispatch } from "@/contexts/menusContext";
 import { LINKS } from "@/constants/links";
@@ -42,7 +42,6 @@ export default function RecordScreen() {
   const { recordsForPost } = useRecords();
   const { createRecordsForPost } = useRecordsDispatch();
 
-  // TODO: change name
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -66,15 +65,21 @@ export default function RecordScreen() {
     <View>
       {isLoading ? (
         <Spinner size="large" color="$green10" />
+      ) : recordsForPost && Object.keys(recordsForPost).length > 0 ? (
+        <>
+          <SizableText color="white">{menu?.name}</SizableText>
+          <SizableText color="white">{menu?.memo}</SizableText>
+          <RecordForm menuId={numberMenuId} />
+        </>
       ) : (
-        recordsForPost &&
-        Object.keys(recordsForPost).length > 0 && (
-          <>
-            <SizableText color="white">{menu?.name}</SizableText>
-            <SizableText color="white">{menu?.memo}</SizableText>
-            <RecordForm menuId={numberMenuId} />
-          </>
-        )
+        <View>
+          <SizableText color="white">
+            No exercises found for this menu.
+          </SizableText>
+          <Link href={`${LINKS.menus}/${numberMenuId}`}>
+            <SizableText color="white">Go to Menu page</SizableText>
+          </Link>
+        </View>
       )}
     </View>
   );
